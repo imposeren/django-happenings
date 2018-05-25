@@ -3,7 +3,10 @@ from __future__ import unicode_literals
 from calendar import monthrange
 import datetime
 
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 from django.utils.six.moves import xrange
 
 from .event_factory import create_event, SetMeUp

@@ -6,8 +6,8 @@
     {% if cal_error %}
         {{ cal_error }}
     {% endif %}
-    
-    <a href="{% url "calendar:list" %}{{ year }}/{{ month_num }}/">
+
+    <a href="{{ calendar_back_url }}">
         &larr; {% trans "Back to calendar" %}
     </a>
     

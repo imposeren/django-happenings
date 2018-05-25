@@ -2,7 +2,10 @@ from __future__ import unicode_literals
 
 from datetime import date
 
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 
 from .event_factory import create_event, SetMeUp
 

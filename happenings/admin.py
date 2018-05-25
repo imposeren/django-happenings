@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from happenings.models import Event, Location, Category, Tag, Cancellation
+
+from .models import Event, Location, Category, Tag, Cancellation
 
 
 class CancellationInline(admin.TabularInline):

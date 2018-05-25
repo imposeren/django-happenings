@@ -2,7 +2,10 @@ from __future__ import unicode_literals
 
 from calendar import month_name
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 from django.test.utils import override_settings
 from django.utils import timezone
 from django.utils import six

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-{% load staticfiles %}
+{% load staticfiles i18n %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Event Calendar{% endblock title %}</title>
+    <title>{% block title %}{% trans "Event Calendar" context "happenings templates" %}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'happenings/css/calendar.css' %}">
     {% block extra_css %}{% endblock extra_css %}
 </head>

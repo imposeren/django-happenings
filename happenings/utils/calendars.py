@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import unicode_literals
 
 # python lib:
 from calendar import LocaleHTMLCalendar, HTMLCalendar, month_name
 from datetime import date
-import sys
 
 # django:
 from django.conf import settings
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 from django.template.loader import render_to_string
 from django.utils.dates import WEEKDAYS, WEEKDAYS_ABBR
 from django.utils.html import mark_safe
