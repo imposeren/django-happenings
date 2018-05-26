@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 # Used to generate upcoming events
 
+from __future__ import absolute_import
 from __future__ import unicode_literals
 
 from datetime import timedelta, date, datetime
@@ -7,7 +9,7 @@ from datetime import timedelta, date, datetime
 from django.utils.timezone import make_aware, get_default_timezone
 from django.utils.six.moves import xrange
 
-from happenings.utils.common import inc_month
+from .common import inc_month
 
 
 class UpcomingEvents(object):

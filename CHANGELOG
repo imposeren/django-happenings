@@ -1,3 +1,13 @@
+Version 0.4.0 (May 26, 2018)
+-----------------------------
+  * Yaroslav Klyuyev <https://github.com/imposeren> updated project:
+
+    * happenings now support Django versions '>=1.8'. 'Django~=2.0' may be
+      partially supported but this was not manually tested (tox tests pass).
+    * Dropped support for 'Django<1.8'
+    * Using f'{settings.CALENDAR_URLS_NAMESPACE}:{view_name}' instead of f'calendar:{view_name}'
+    * Wrapped more text with translations
+
 Version 0.3.3 (September 1, 2015)
 -----------------------------
   * Yaroslav Klyuyev <https://github.com/imposeren> made some improvements

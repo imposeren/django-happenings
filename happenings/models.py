@@ -1,44 +1,49 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import datetime
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 from django.db import models
-from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import pgettext_lazy as pgettext
 
 
 from .managers import EventManager
 
-auth_user_model = getattr(settings, "AUTH_USER_MODEL", "auth.User")
+auth_user_model = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+URLS_NAMESPACE = getattr(settings, "CALENDAR_URLS_NAMESPACE", 'calendar')
 
 
 @python_2_unicode_compatible
 class Event(models.Model):
 
-    USER_COLORS = getattr(settings, "CALENDAR_COLORS", '')
+    USER_COLORS = getattr(settings, 'CALENDAR_COLORS', '')
 
     REPEAT_CHOICES = (
-        ('NEVER', _('Never')),
-        ('DAILY', _('Every Day')),
-        ('WEEKDAY', _('Every Weekday')),
-        ('WEEKLY', _('Every Week')),
-        ('BIWEEKLY', _('Every 2 Weeks')),
-        ('MONTHLY', _('Every Month')),
-        ('YEARLY', _('Every Year')),
+        ('NEVER', pgettext('happenings repeat choices', 'Never')),
+        ('DAILY', pgettext('happenings repeat choices', 'Every Day')),
+        ('WEEKDAY', pgettext('happenings repeat choices', 'Every Weekday')),
+        ('WEEKLY', pgettext('happenings repeat choices', 'Every Week')),
+        ('BIWEEKLY', pgettext('happenings repeat choices', 'Every 2 Weeks')),
+        ('MONTHLY', pgettext('happenings repeat choices', 'Every Month')),
+        ('YEARLY', pgettext('happenings repeat choices', 'Every Year')),
     )
     COLORS = [
-        ('eeeeee', _('gray')),
-        ('ff0000', _('red')),
-        ('0000ff', _('blue')),
-        ('00ff00', _('green')),
-        ('000000', _('black')),
-        ('ffffff', _('white')),
+        ('eeeeee', pgettext('happenings colors', 'gray')),
+        ('ff0000', pgettext('happenings colors', 'red')),
+        ('0000ff', pgettext('happenings colors', 'blue')),
+        ('00ff00', pgettext('happenings colors', 'green')),
+        ('000000', pgettext('happenings colors', 'black')),
+        ('ffffff', pgettext('happenings colors', 'white')),
     ]
 
     try:
@@ -46,42 +51,74 @@ class Event(models.Model):
     except Exception:
         pass
 
-    start_date = models.DateTimeField(verbose_name=_("start date"))
-    end_date = models.DateTimeField(_("end date"))
-    all_day = models.BooleanField(_("all day"), default=False)
+    start_date = models.DateTimeField(
+        pgettext('happenings fields', 'Start Date'),
+    )
+    end_date = models.DateTimeField(
+        pgettext('happenings fields', 'End Date'),
+    )
+    all_day = models.BooleanField(
+        pgettext('happenings fields', 'All Day'),
+        default=False,
+    )
     repeat = models.CharField(
-        _("repeat"), max_length=15, choices=REPEAT_CHOICES, default='NEVER'
+        pgettext('happenings fields', 'Repeat'),
+        max_length=15, choices=REPEAT_CHOICES, default='NEVER',
     )
-    end_repeat = models.DateField(_("end repeat"), null=True, blank=True)
-    title = models.CharField(_("title"), max_length=255)
-    description = models.TextField(_("description"))
+    end_repeat = models.DateField(
+        pgettext('happenings fields', 'End Repeat'),
+        null=True, blank=True,
+    )
+    title = models.CharField(
+        pgettext('happenings fields', 'Title'),
+        max_length=255,
+    )
+    description = models.TextField(
+        pgettext('happenings fields', 'Description'),
+    )
     location = models.ManyToManyField(
-        'Location', verbose_name=_('locations'), blank=True
+        'Location',
+        verbose_name=pgettext('happenings fields', 'Locations'),
+        blank=True,
     )
-    objects = EventManager()
     created_by = models.ForeignKey(
-        auth_user_model, verbose_name=_("created by"), related_name='events'
+        auth_user_model,
+        verbose_name=pgettext('happenings fields', 'Created by'),
+        related_name='events', on_delete=models.CASCADE,
     )
     categories = models.ManyToManyField(
-        'Category', verbose_name=_('categories'), blank=True
+        'Category',
+        verbose_name=pgettext('happenings fields', 'Categories'),
+        blank=True,
     )
-    tags = models.ManyToManyField('Tag', verbose_name=_('tags'), blank=True)
+    tags = models.ManyToManyField(
+        'Tag',
+        verbose_name=pgettext('happenings fields', 'Tags'),
+        blank=True,
+    )
 
     # --------------------------------COLORS-------------------------------- #
     background_color = models.CharField(
-        _("background color"), max_length=10, choices=COLORS, default='eeeeee'
+        pgettext('happenings fields', 'Background Color'),
+        max_length=10, choices=COLORS, default='eeeeee',
     )
     background_color_custom = models.CharField(
-        _("background color custom"), max_length=6, blank=True,
-        help_text=_('Must be a valid hex triplet. Default is gray (eeeeee)')
+        pgettext('happenings fields', 'Background Color Custom'),
+        max_length=6, blank=True,
+        help_text=pgettext('happenings fields', 'Must be a valid hex triplet. Default is gray (eeeeee)'),
     )
     font_color = models.CharField(
-        _("font color"), max_length=10, choices=COLORS, default='000000'
+        pgettext('happenings fields', 'Font Color'),
+        max_length=10, choices=COLORS, default='000000'
     )
     font_color_custom = models.CharField(
-        _("font color custom"), max_length=6, blank=True,
-        help_text=_('Must be a valid hex triplet. Default is black (000000)')
+        pgettext('happenings fields', 'Font Color Custom'),
+        max_length=6, blank=True,
+        help_text=pgettext('happenings fields', 'Must be a valid hex triplet. Default is black (000000)'),
     )
+
+    # Non-Fields:
+    objects = EventManager()
 
     def __init__(self, *args, **kwargs):
         super(Event, self).__init__(*args, **kwargs)
@@ -225,7 +262,7 @@ class Event(models.Model):
             self._check_if_cancelled_cache[date] = result
 
         if result:
-            self.title_extra = _(" (CANCELLED)")
+            self.title_extra = pgettext('happenings rendering', ' (CANCELLED)')
         self._last_check_if_cancelled = result
         return result
 
@@ -265,7 +302,7 @@ class Event(models.Model):
 
     def clean_colors(self):
         """Makes sure that if a custom color is supplied, it's valid."""
-        err = _("Color must be a valid hex triplet.")
+        err = pgettext('happenings errors', 'Color must be a valid hex triplet.')
         colors = ['background_color_custom', 'font_color_custom']
         colors2 = colors + ['background_color', 'font_color']
         # If there are custom colors specified in settings, length of
@@ -285,29 +322,47 @@ class Event(models.Model):
                         raise ValidationError(err)
 
     def get_absolute_url(self):
-        return reverse('calendar:detail', args=[str(self.id)])
+        return reverse(URLS_NAMESPACE + ':detail', args=[str(self.id)])
 
     class Meta:
-        verbose_name = _('event')
-        verbose_name_plural = _('events')
+        verbose_name = pgettext('happenings models', 'Event')
+        verbose_name_plural = pgettext('happenings models', 'Events')
 
 
 @python_2_unicode_compatible
 class Location(models.Model):
-    name = models.CharField(_('Name'), max_length=255)
+    name = models.CharField(
+        pgettext('happenings fields', 'Name'),
+        max_length=255,
+    )
     address_line_1 = models.CharField(
-        _('Address Line 1'), max_length=255, blank=True)
+        pgettext('happenings fields', 'Address Line 1'),
+        max_length=255, blank=True,
+    )
     address_line_2 = models.CharField(
-        _('Address Line 2'), max_length=255, blank=True)
+        pgettext('happenings fields', 'Address Line 2'),
+        max_length=255, blank=True,
+        )
     address_line_3 = models.CharField(
-        _('Address Line 3'), max_length=255, blank=True)
+        pgettext('happenings fields', 'Address Line 3'),
+        max_length=255, blank=True,
+    )
     state = models.CharField(
-        _('State / Province / Region'), max_length=63, blank=True)
+        pgettext('happenings fields', 'State / Province / Region'),
+        max_length=63, blank=True,
+    )
     city = models.CharField(
-        _('City / Town'), max_length=63, blank=True)
+        pgettext('happenings fields', 'City / Town'),
+        max_length=63, blank=True,
+    )
     zipcode = models.CharField(
-        _('ZIP / Postal Code'), max_length=31, blank=True)
-    country = models.CharField(_('Country'), max_length=127, blank=True)
+        pgettext('happenings fields', 'ZIP / Postal Code'),
+        max_length=31, blank=True,
+    )
+    country = models.CharField(
+        pgettext('happenings fields', 'Country'),
+        max_length=127, blank=True,
+    )
 
     def __str__(self):
         return self.name
@@ -315,18 +370,24 @@ class Location(models.Model):
 
 @python_2_unicode_compatible
 class Category(models.Model):
-    title = models.CharField(_('title'), max_length=255)
+    title = models.CharField(
+        pgettext('happenings fields', 'Title'),
+        max_length=255,
+    )
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name_plural = 'Categories'
+        verbose_name_plural = pgettext('happenings models', 'Categories')
 
 
 @python_2_unicode_compatible
 class Tag(models.Model):
-    name = models.CharField(_('name'), max_length=255)
+    name = models.CharField(
+        pgettext('happenings fields', 'name'),
+        max_length=255,
+    )
 
     def __str__(self):
         return self.name
@@ -335,10 +396,16 @@ class Tag(models.Model):
 @python_2_unicode_compatible
 class Cancellation(models.Model):
     event = models.ForeignKey(
-        Event, related_name="cancellations", related_query_name="cancellation"
+        Event,
+        related_name='cancellations', related_query_name='cancellation', on_delete=models.CASCADE,
     )
-    reason = models.CharField(_("reason"), max_length=255)
-    date = models.DateField(_("date"))
+    reason = models.CharField(
+        pgettext('happenings fields', 'Reason'),
+        max_length=255,
+    )
+    date = models.DateField(
+        pgettext('happenings fields', 'Date'),
+    )
 
     def __str__(self):
         return self.event.title + ' - ' + str(self.date)

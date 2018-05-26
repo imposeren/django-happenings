@@ -3,7 +3,10 @@ from __future__ import unicode_literals
 import datetime
 
 from django.utils.timezone import make_aware, get_default_timezone
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.test import TestCase
 from django.contrib.auth.models import User

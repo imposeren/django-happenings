@@ -24,7 +24,10 @@ start_day = getattr(settings, "CALENDAR_START_DAY", 0)
 def show_calendar(context, req=None, mini=False, inherit_context=False):
     req = req or context.get('request', None)
     if not (req and hasattr(req, 'path') and hasattr(req, 'META')):
-        raise TemplateSyntaxError(r"{% show_calendar %} should be called with HttpRequest instance as first argument or it should be available as `request` variable in template context")
+        raise TemplateSyntaxError(
+            r"{% show_calendar %} should be called with HttpRequest instance as first argument or "
+            "it should be available as `request` variable in template context"
+        )
     now = get_now()
     net, category, tag = get_net_category_tag(req)
     year = now.year

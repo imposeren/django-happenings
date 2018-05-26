@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import unicode_literals
 
 # python lib:
@@ -9,19 +10,23 @@ from django.views.generic import ListView, DetailView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils.dates import MONTHS_ALT
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 
 # thirdparties:
 import six
 
 # happenings:
 from .models import Event
-from happenings.utils.displays import month_display, day_display
-from happenings.utils.next_event import get_next_event
-from happenings.utils.mixins import JSONResponseMixin
-from happenings.utils import common as c
+from .utils.displays import month_display, day_display
+from .utils.next_event import get_next_event
+from .utils.mixins import JSONResponseMixin
+from .utils import common as c
 
 
-CALENDAR_LOCALE = getattr(settings, 'CALENDAR_LOCALE', 'en_US.utf8')
+URLS_NAMESPACE = getattr(settings, "CALENDAR_URLS_NAMESPACE", 'calendar')
 
 
 class GenericEventView(JSONResponseMixin, ListView):
@@ -142,6 +147,14 @@ class EventMonthView(GenericEventView):
 class EventDayView(GenericEventView):
     template_name = 'happenings/event_day_list.html'
 
+    def get_calendar_back_url(self, year, month_num):
+        self.request.current_app = self.request.resolver_match.namespace
+        if URLS_NAMESPACE:
+            view_name = URLS_NAMESPACE + ':list'
+        else:
+            view_name = 'list'
+        return reverse(view_name, args=(year, month_num), current_app=self.request.current_app)
+
     def check_for_cancelled_events(self, d):
         """Check if any events are cancelled on the given date 'd'."""
         for event in self.events:
@@ -186,6 +199,7 @@ class EventDayView(GenericEventView):
         context['month_day_year'] = u"%(month)s %(day)d, %(year)d" % (
             {'month': display_month, 'day': day, 'year': year}
         )
+        context['calendar_back_url'] = self.get_calendar_back_url(year, month)
 
         # for use in the template to build next & prev querystrings
         context['next'], context['prev'] = c.get_next_and_prev(self.net)

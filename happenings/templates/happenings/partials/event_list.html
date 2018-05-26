@@ -1,4 +1,4 @@
-{% load weekday %}
+{% load i18n weekday %}
 
 <div id="event-list">
     <ul class="calendar-list">
@@ -26,7 +26,7 @@
             {% endwith %}
         {% endfor %}
     {% empty %}
-    Oops.. No events!
+    {% trans "Oops.. No events!" %}
     {% endfor %}
     </ul>
 </div>

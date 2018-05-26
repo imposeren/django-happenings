@@ -1,10 +1,13 @@
-=================
-Django Happenings
-=================
+========================
+Django Happenings Update
+========================
 
 |travis| |coverage| |version|
 
-An event calendar app for Django.
+An event calendar app for Django forked from https://github.com/wreckage/django-happenings
+to support newer Django versions.
+
+All or most of the following text is from parent repository...
 
 Features:
 
@@ -35,15 +38,14 @@ Dependencies
 
 Required:
 
-* Django 1.6+
-* Python 2.6+, 3+
+* Django 1.8+
+* Python 2.7+, 3+
 * pytz
 
 Optional:
 
 * jQuery
 * Twitter Bootstrap 3.0.0+ (w/ tooltip plugin)
-* South (for database migrations)
 
 jQuery is used for AJAX and the 'Today' button on the calendar.
 
@@ -55,10 +57,10 @@ TWBS is used to create popovers when an event is clicked on the calendar.
 
    .. code-block:: python
 
-	SOUTH_MIGRATION_MODULES = {
-	    'taggit': 'taggit.south_migrations',
-	    'happenings': 'happenings.south_migrations',
-	}
+    	SOUTH_MIGRATION_MODULES = {
+    	    'taggit': 'taggit.south_migrations',
+    	    'happenings': 'happenings.south_migrations',
+    	}
 
 Quick Install
 -------------
@@ -71,10 +73,10 @@ Quick Install
 
    .. code-block:: python
 
-	  INSTALLED_APPS = (
-	    ...
-	    'happenings',
-	  )
+  	  INSTALLED_APPS = (
+  	    ...
+  	    'happenings',
+  	  )
 
 3. Include the ``django-happenings`` URLconf in urls.py:
    
@@ -145,7 +147,7 @@ in TEMPLATE_CONTEXT_PROCESSORS in your settings.py.
 
 If you are using custom templates for calendar and want to access all variables
 from current template context then you can call ``show_calendar`` tag with
-``inherit_context=True`` argument:
+``inherit_context=True`` argument::
 
     <div id="event-calendar">
         {% show_calendar request inherit_context=True %}
@@ -271,7 +273,7 @@ Tests
 
 ``$ pip install tox``
 
-``$ tox -e py27-django16``
+``$ tox -e py27-django18``
 
 More To Come!
 -------------

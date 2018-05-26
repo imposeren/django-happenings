@@ -1,12 +1,12 @@
 {% extends 'happenings/middle.html' %}
-{% load staticfiles happenings_tags %}
+{% load staticfiles i18n happenings_tags %}
 {% block content %}
 
 {% if cal_error %}
     {{ cal_error }}
 {% endif %}
 
-{% if not show_events %}<h1>Event Calendar</h1>{% endif %}
+{% if not show_events %}<h1>{% trans "Event Calendar" %}</h1>{% endif %}
 
 <div id="event-calendar">
     {{ calendar|safe }}
@@ -15,14 +15,20 @@
 {% if show_events %}
 <h1 id="month-list-events-title">
     {% if cal_category and cal_tag %}
-        Events in category {{ cal_category }}
-        with tag = {{ cal_tag }}
+        {% blocktrans trimmed %}
+            Events in category {{ cal_category }}
+            with tag = {{ cal_tag }}
+        {% endblocktrans %}
     {% elif cal_category %}
-        Events in {{ cal_category }}
+        {% blocktrans trimmed %}
+            Events in {{ cal_category }}
+        {% endblocktrans %}
     {% elif cal_tag %}
-        Events with tag = {{ cal_tag }}
+        {% blocktrans trimmed %}
+            Events with tag = {{ cal_tag }}
+        {% endblocktrans %}
     {% else %}
-        Events
+        {% trans "Events" %}
     {% endif %}
 </h1>
 

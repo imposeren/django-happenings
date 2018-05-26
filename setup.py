@@ -9,15 +9,15 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-happenings',
+    name='django-happenings-update',
     version=happenings.__version__,
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests', 'tests.*')),
     include_package_data=True,
     license='BSD License',
     description='A simple event calendar app for Django.',
     long_description=README,
-    author='Reuben Urbina',
-    author_email='reuben.urbina@gmail.com',
+    author='Yaroslav Klyuyev',
+    author_email='imposeren@gmail.com',
     url=happenings.__url__,
     zip_safe=False,
     classifiers=[
@@ -33,7 +33,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     install_requires=[
-        'django >= 1.6',
+        'django >= 1.8',
         'pytz',
         'six >= 1.9, <  2.0',
     ],

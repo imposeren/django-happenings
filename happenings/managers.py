@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import datetime
@@ -66,24 +68,6 @@ class EventManager(models.Manager):
             Q(end_repeat=None) | Q(end_repeat__gte=ym_first),
             start_date__lte=ym_last  # no events that haven't started yet
         ).filter(**kwargs).prefetch_related(*pref).order_by('start_date').distinct()
-
-#    XXX These are no longer used since all_month_events() (above) was created.
-#    def month_events(self, year, month, category=None, tag=None):
-#        """
-#        Returns the events within the given month and year. If category
-#        and/or tag is given, the events returned will have
-#        those categories/tags.
-#        """
-#        kwargs = self._get_kwargs(category, tag)
-#        return self.model.objects.within(year, month).filter(
-#            **kwargs).prefetch_related('location', 'cancellations')
-#
-#    def within(self, year, month):
-#        """Returns events within the given year and month."""
-#        return self.model.objects.filter(
-#            Q(start_date__year=year) | Q(end_date__year=year),
-#            Q(start_date__month=month) | Q(end_date__month=month)
-#        )
 
     def live(self, now):
         """

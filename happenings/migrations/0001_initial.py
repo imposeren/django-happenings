@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -50,7 +51,7 @@ class Migration(migrations.Migration):
                 ('font_color', models.CharField(default='000000', max_length=10, verbose_name='font color', choices=[('eeeeee', 'gray'), ('ff0000', 'red'), ('0000ff', 'blue'), ('00ff00', 'green'), ('000000', 'black'), ('ffffff', 'white')])),
                 ('font_color_custom', models.CharField(help_text='Must be a valid hex triplet. Default is black (000000)', max_length=6, verbose_name='font color custom', blank=True)),
                 ('categories', models.ManyToManyField(to='happenings.Category', verbose_name='categories', blank=True)),
-                ('created_by', models.ForeignKey(related_name='events', verbose_name='created by', to=settings.AUTH_USER_MODEL)),
+                ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', verbose_name='created by', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'event',
@@ -100,7 +101,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cancellation',
             name='event',
-            field=models.ForeignKey(related_query_name='cancellation', related_name='cancellations', to='happenings.Event'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_query_name='cancellation', related_name='cancellations', to='happenings.Event'),
             preserve_default=True,
         ),
     ]
