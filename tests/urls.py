@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-import django
+from django import VERSION
 
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -14,7 +14,7 @@ urlpatterns = [
     ),
 ]
 
-if django.__version__.split('.')[:2] >= ['1', '9']:
+if VERSION >= (1, 9):
     urlpatterns += [
         url(
             r'^admin/', include(admin.site.urls[:2])

@@ -278,12 +278,12 @@ Tests
 More To Come!
 -------------
 
-.. |travis| image:: https://travis-ci.org/wreckage/django-happenings.svg?branch=master
+.. |travis| image:: https://travis-ci.com/imposeren/django-happenings.svg?branch=master
    :alt: Build Status - master branch
-   :target: https://travis-ci.org/wreckage/django-happenings
-.. |coverage| image:: https://coveralls.io/repos/wreckage/django-happenings/badge.png?branch=master
+   :target: https://travis-ci.com/imposeren/django-happenings
+.. |coverage| image:: https://coveralls.io/repos/github/imposeren/django-happenings/badge.svg?branch=master
    :alt: Coverage Status
-   :target: https://coveralls.io/r/wreckage/django-happenings?branch=master
-.. |version| image:: https://badge.fury.io/py/django-happenings.svg
+   :target: https://coveralls.io/github/imposeren/django-happenings?branch=master
+.. |version| image:: https://badge.fury.io/gh/imposeren%2Fdjango-happenings.svg
    :alt: Pypi Version
-   :target: https://badge.fury.io/py/django-happenings
+   :target: https://badge.fury.io/gh/imposeren%2Fdjango-happenings
