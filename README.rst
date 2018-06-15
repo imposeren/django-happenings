@@ -219,6 +219,10 @@ In titles of events minutes may be stripped from time when there are 0 minutes. 
 	## or if you do not want minutes to be stripped
 	# CALENDAR_HOUR_FORMAT = 'H:i'
 
+Set ``CALENDAR_PASS_VIEW_CONTEXT_TO_DISPLAY_METHOD = True`` to pass context of calendar view to method
+that renders calendar. Effectively this does not cause any changes to calendar rendering, but this
+may be useful if you create your own calendar views.
+
 
 Upgrading from 0.2.X to 0.3.X
 -----------------------------

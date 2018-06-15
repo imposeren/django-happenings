@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 from datetime import date, timedelta
 
 # django:
+from django.db.models.functions import ExtractHour
 from django.views.generic import ListView, DetailView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -33,6 +34,7 @@ class GenericEventView(JSONResponseMixin, ListView):
     model = Event
 
     def render_to_response(self, context, **kwargs):
+        self.postprocess_context(context)
         if self.request.is_ajax():
             return self.render_to_json_response(context, **kwargs)
         return super(GenericEventView, self).render_to_response(
@@ -51,6 +53,9 @@ class GenericEventView(JSONResponseMixin, ListView):
         if self.tag is not None:
             context['cal_tag'] = self.tag
         return context
+
+    def postprocess_context(self, context, *args, **kwargs):
+        return
 
 
 class EventMonthView(GenericEventView):
@@ -94,12 +99,6 @@ class EventMonthView(GenericEventView):
 
         year, month, error = self.get_year_and_month(self.net, qs)
 
-        mini = True if 'cal_mini=true' in qs else False
-
-        # get any querystrings that are not next/prev/year/month
-        if qs:
-            qs = c.get_qs(qs)
-
         # add a dict containing the year, month, and month name to the context
         current = dict(
             year=year, month_num=month, month=MONTHS_ALT[month][:3]
@@ -118,22 +117,15 @@ class EventMonthView(GenericEventView):
         if error:  # send any year/month errors
             context['cal_error'] = error
 
-        # List enables sorting. As far as I can tell, .order_by() can't be used
-        # here because we need it ordered by l_start_date.hour (simply ordering
-        # by start_date won't work). The only alternative I've found is to use
-        # extra(), but this would likely require different statements for
-        # different databases...
-        all_month_events = list(self.get_month_events(
-            year, month, self.category, self.tag, loc=True, cncl=True
-        ))
-
-        all_month_events.sort(key=lambda x: x.l_start_date.hour)
-
-        start_day = getattr(settings, "CALENDAR_START_DAY", 0)
-        context['calendar'] = month_display(
-            year, month, all_month_events, start_day, self.net, qs, mini,
-            request=self.request,
+        all_month_events = list(
+            self.get_month_events(
+                year, month, self.category, self.tag, loc=True, cncl=True
+            ).annotate(
+                start_hour=ExtractHour('start_date')
+            ).order_by('start_hour')
         )
+
+        context['raw_all_month_events'] = all_month_events
 
         context['show_events'] = False
         if getattr(settings, "CALENDAR_SHOW_LIST", False):
@@ -142,6 +134,37 @@ class EventMonthView(GenericEventView):
                 if self.request.is_ajax() else c.order_events(all_month_events)
 
         return context
+
+    def postprocess_context(self, context, *args, **kwargs):
+        qs = self.request.META['QUERY_STRING']
+
+        mini = True if 'cal_mini=true' in qs else False
+
+        start_day = getattr(settings, "CALENDAR_START_DAY", 0)
+
+        # get any querystrings that are not next/prev/year/month
+        if qs:
+            qs = c.get_qs(qs)
+
+        if getattr(settings, "CALENDAR_PASS_VIEW_CONTEXT_TO_DISPLAY_METHOD", False):
+            month_display_base_context = dict(context)
+            month_display_base_context.pop('events', None)
+        else:
+            month_display_base_context = None
+
+        all_month_events = context['raw_all_month_events']
+
+        context['calendar'] = month_display(
+            context['current']['year'],
+            context['current']['month_num'],
+            all_month_events,
+            start_day,
+            self.net,
+            qs,
+            mini,
+            request=self.request,
+            base_context=month_display_base_context,
+        )
 
 
 class EventDayView(GenericEventView):

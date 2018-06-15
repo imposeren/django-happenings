@@ -1,3 +1,12 @@
+Version 0.4.4 (June 15, 2018)
+-----------------------------
+  * Yaroslav Klyuyev <https://github.com/imposeren> updated project:
+
+    * dropped support for Django<1.11
+    * using ORM method order_by (with annotate) to sort events instead of list
+      sorting
+    * tuned EventMonthView to allow easier modification of calendar rendering
+
 Version 0.4.0 (May 26, 2018)
 -----------------------------
   * Yaroslav Klyuyev <https://github.com/imposeren> updated project:

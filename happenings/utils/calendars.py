@@ -268,7 +268,6 @@ class LegacyGenericCalendar(LocaleHTMLCalendar):
                 'Today</button> %s</th></tr>' % s)
 
 
-
 class LegacyEventCalendar(LegacyGenericCalendar):
     def popover_helper(self):
         """Populate variables used to build popovers."""
